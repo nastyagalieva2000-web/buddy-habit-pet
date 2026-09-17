@@ -1,9 +1,15 @@
-const CACHE_NAME = 'buddy-cache-v11';
+const CACHE_NAME = 'buddy-cache-v12';
 const ANIMAL_IDS = [
   'cat', 'dog', 'rabbit', 'sheep', 'fox', 'deer', 'cow', 'horse',
   'owl', 'penguin', 'seal', 'polarbear',
   'seahorse', 'octopus', 'turtle', 'shark', 'orca',
   'parrot', 'toucan', 'flamingo', 'dolphin',
+];
+const FONT_FILES = [
+  'styrene-light.woff2', 'styrene-light.woff',
+  'styrene-regular.woff2', 'styrene-regular.woff',
+  'styrene-medium.woff2', 'styrene-medium.woff',
+  'styrene-bold.woff2', 'styrene-bold.woff',
 ];
 const APP_SHELL = [
   './',
@@ -22,6 +28,7 @@ const APP_SHELL = [
   './icons/apple-touch-icon.png',
   './assets/ui/coin.png',
   ...ANIMAL_IDS.map(id => `./assets/animals/${id}.png`),
+  ...FONT_FILES.map(f => `./assets/fonts/${f}`),
 ];
 
 self.addEventListener('install', (event) => {

@@ -1,3 +1,36 @@
+@font-face {
+  font-family: 'Styrene A';
+  src: url('../assets/fonts/styrene-light.woff2') format('woff2'),
+       url('../assets/fonts/styrene-light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Styrene A';
+  src: url('../assets/fonts/styrene-regular.woff2') format('woff2'),
+       url('../assets/fonts/styrene-regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Styrene A';
+  src: url('../assets/fonts/styrene-medium.woff2') format('woff2'),
+       url('../assets/fonts/styrene-medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Styrene A';
+  src: url('../assets/fonts/styrene-bold.woff2') format('woff2'),
+       url('../assets/fonts/styrene-bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --burgundy: #4a0f1e;
   --burgundy-dark: #34081a;
@@ -26,7 +59,7 @@ html, body {
   height: 100%;
   background: var(--sand);
   color: var(--ink);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+  font-family: 'Styrene A', -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: none;
 }
@@ -594,6 +627,17 @@ button, input, select {
   color: white;
 }
 .habit-check-btn:active { background: var(--moss-dark); }
+
+.habit-done-msg {
+  margin: 0;
+  padding: 11px;
+  text-align: center;
+  border-radius: 999px;
+  background: var(--sand-dark);
+  color: var(--ink-soft);
+  font-weight: 700;
+  font-size: 14px;
+}
 
 .add-habit-form {
   display: flex;

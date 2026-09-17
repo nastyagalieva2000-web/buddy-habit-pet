@@ -1,7 +1,7 @@
 import {
   getState, subscribe, tick, getStage, getMoodBand, STAGE_LABEL,
   completeHabit, addHabit, removeHabit, updateHabitTarget, getHabitWeekCount, isPinnedToday,
-  isUrgentToday, getTodayHabits,
+  isUrgentToday, getTodayHabits, isHabitDoneToday,
   renamePet, updateSettings, resetAll,
   setSpecies, unlockSpecies, isSpeciesUnlocked, useTreat, isHabitExcusedThisWeek, TREAT_COST,
   getActivityByDay, getWeekSummary, onEvent,
@@ -209,9 +209,12 @@ function finishTimer() {
   timerInterval = null;
   activeTimer = null;
   clearTimerStorage();
-  completeHabit(habitId, { minutes });
-  celebrate();
-  if (habit) showToast(`${habit.emoji} ${habit.title} — ${minutes} мин, готово!`);
+  if (completeHabit(habitId, { minutes })) {
+    celebrate();
+    if (habit) showToast(`${habit.emoji} ${habit.title} — ${minutes} мин, готово!`);
+  } else {
+    render();
+  }
 }
 
 function stopTimer() {
@@ -223,6 +226,9 @@ function stopTimer() {
 }
 
 function habitControlsHTML(habit) {
+  if (isHabitDoneToday(habit.id)) {
+    return `<p class="habit-done-msg">✅ Уже засчитано сегодня — заходи завтра</p>`;
+  }
   if (habit.mode === 'timer') {
     const runningHere = activeTimer && activeTimer.habitId === habit.id;
     const blockedByOther = activeTimer && activeTimer.habitId !== habit.id;
@@ -315,15 +321,25 @@ function handleHabitAction(habitId, action, actionEl, { fromToday = false } = {}
       if (!Number.isNaN(n) && n > 0) updateHabitTarget(habitId, n);
     }
   } else if (action === 'check') {
-    completeHabit(habitId, { minutes: 0 });
-    celebrate();
-    showToast(`${habit.emoji} ${habit.title} — готово!`);
+    if (completeHabit(habitId, { minutes: 0 })) {
+      celebrate();
+      showToast(`${habit.emoji} ${habit.title} — готово!`);
+    } else {
+      showToast('Уже засчитано сегодня');
+    }
   } else if (action === 'quick') {
     const minutes = Number(actionEl.dataset.min);
-    completeHabit(habitId, { minutes });
-    celebrate();
-    showToast(`${habit.emoji} ${habit.title} засчитано!`);
+    if (completeHabit(habitId, { minutes })) {
+      celebrate();
+      showToast(`${habit.emoji} ${habit.title} засчитано!`);
+    } else {
+      showToast('Уже засчитано сегодня');
+    }
   } else if (action === 'timer-start') {
+    if (isHabitDoneToday(habitId)) {
+      showToast('Уже засчитано сегодня');
+      return;
+    }
     startTimer(habitId, Number(actionEl.dataset.min));
     if (fromToday) goto('tasks');
   } else if (action === 'timer-pause') {

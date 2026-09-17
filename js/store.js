@@ -336,9 +336,17 @@ function feedPet({ hungerAmt = 22, joyAmt = 14, coinAmt = 6 }) {
   return { coins: coinAmt };
 }
 
+// A habit can only be completed (and rewarded) once per calendar day —
+// otherwise mashing the button farms unlimited coins/hunger/joy.
+export function isHabitDoneToday(habitId) {
+  const today = todayStr();
+  return state.log.some(e => e.habitId === habitId && todayStr(new Date(e.ts)) === today);
+}
+
 export function completeHabit(habitId, { minutes = 0 } = {}) {
   const habit = state.habits.find(h => h.id === habitId);
   if (!habit) return null;
+  if (isHabitDoneToday(habitId)) return null;
 
   const hungerAmt = 16 + Math.min(10, Math.round(minutes / 5));
   const joyAmt = 10 + Math.min(10, Math.round(minutes / 6));
