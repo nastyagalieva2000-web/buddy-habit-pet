@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<title>Бадди — питомец от прокрастинации</title>
+<meta name="description" content="Заботься о своём питомце, выполняя реальные дела: читай, тренируйся, фокусируйся." />
+<meta name="theme-color" content="#4a0f1e" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" href="icons/icon-192.png" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Бадди" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div id="toast" class="toast" aria-live="polite"></div>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <span class="flame">🔥</span>
+    <span id="streakCount">0</span>
+    <span class="topbar-label">дней подряд</span>
+  </div>
+  <div class="topbar-right">
+    <img class="coin-icon" src="assets/ui/coin.png" alt="монеты" />
+    <span id="coinCount">0</span>
+  </div>
+</header>
+
+<main id="view-pet" class="view active">
+  <section class="pet-stage" id="petStage">
+    <div class="pet-sparkles" id="petSparkles" aria-hidden="true"></div>
+    <div id="petSvgHost" class="pet-svg-host"></div>
+    <div class="pet-name-row">
+      <h1 id="petName">Бадди</h1>
+      <span id="petStageLabel" class="stage-badge">яйцо</span>
+    </div>
+    <p id="petMoodLine" class="pet-mood-line">Ждёт, когда ты о нём позаботишься</p>
+  </section>
+
+  <div id="sickBanner" class="sick-banner hidden"></div>
+
+  <section class="card today-card">
+    <h3 id="todayTitle">Сегодня</h3>
+    <div id="todayList"></div>
+  </section>
+
+  <section class="stats">
+    <div class="stat">
+      <div class="stat-label"><span>🍎 Сытость</span><span id="hungerPct">100%</span></div>
+      <div class="bar"><div id="hungerBar" class="bar-fill hunger" style="width:100%"></div></div>
+    </div>
+    <div class="stat">
+      <div class="stat-label"><span>✨ Радость</span><span id="joyPct">100%</span></div>
+      <div class="bar"><div id="joyBar" class="bar-fill joy" style="width:100%"></div></div>
+    </div>
+  </section>
+
+  <section class="quick-actions">
+    <button class="quick-btn" data-goto="tasks">
+      <span class="quick-emoji">📖</span><span>Покормить делом</span>
+    </button>
+    <button class="quick-btn" data-goto="shop">
+      <span class="quick-emoji">🦊</span><span>Новый питомец</span>
+    </button>
+  </section>
+</main>
+
+<main id="view-tasks" class="view">
+  <h2 class="view-title">Привычки недели</h2>
+  <p class="view-sub">Неделя идёт пн–вс. Не закроешь норму — питомцу будет плохо.</p>
+
+  <div id="habitsList"></div>
+
+  <section class="card">
+    <h3>Добавить свою привычку</h3>
+    <p class="card-sub">Простая отметка, без таймера</p>
+    <div class="add-habit-form">
+      <input id="newHabitTitle" type="text" placeholder="Название" maxlength="40" />
+      <input id="newHabitTarget" type="number" min="1" max="14" value="3" title="Раз в неделю" />
+      <button id="addHabitBtn" class="btn small">Добавить</button>
+    </div>
+  </section>
+</main>
+
+<main id="view-stats" class="view">
+  <h2 class="view-title">Статистика</h2>
+  <p class="view-sub">Прогресс — не только сегодняшнее настроение.</p>
+
+  <section class="stat-grid">
+    <div class="stat-tile">
+      <div class="stat-tile-value" id="statWeekCount">0</div>
+      <div class="stat-tile-label">дел за 7 дней</div>
+    </div>
+    <div class="stat-tile">
+      <div class="stat-tile-value" id="statWeekMinutes">0</div>
+      <div class="stat-tile-label">минут за 7 дней</div>
+    </div>
+    <div class="stat-tile">
+      <div class="stat-tile-value" id="statStreakNow">0</div>
+      <div class="stat-tile-label">стрик сейчас</div>
+    </div>
+    <div class="stat-tile">
+      <div class="stat-tile-value" id="statStreakBest">0</div>
+      <div class="stat-tile-label">лучший стрик</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>Активность за 10 недель</h3>
+    <div id="heatmap" class="heatmap"></div>
+    <div class="heatmap-legend">
+      <span>меньше</span>
+      <span class="heat-swatch h0"></span>
+      <span class="heat-swatch h1"></span>
+      <span class="heat-swatch h2"></span>
+      <span class="heat-swatch h3"></span>
+      <span>больше</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>Последние дела</h3>
+    <ul id="historyList" class="history-list"></ul>
+  </section>
+</main>
+
+<main id="view-shop" class="view">
+  <h2 class="view-title">Зверята</h2>
+  <p class="view-sub">Копи монеты за дела и открывай новых питомцев.</p>
+  <div id="speciesGrid"></div>
+</main>
+
+<main id="view-settings" class="view">
+  <h2 class="view-title">Настройки</h2>
+
+  <section class="card">
+    <div class="settings-row">
+      <div>
+        <h3>Звук и вибрация</h3>
+        <p class="card-sub">Лёгкий отклик при кормлении и покупках</p>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="soundToggle" />
+        <span class="slider"></span>
+      </label>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="settings-row">
+      <div>
+        <h3>Напоминания</h3>
+        <p class="card-sub">Питомец напомнит о себе, если заскучает</p>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="notifToggle" />
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div id="notifDetails" class="notif-details hidden">
+      <label class="field-label">Не беспокоить раньше</label>
+      <input type="time" id="notifStart" value="09:00" />
+      <label class="field-label">и позже</label>
+      <input type="time" id="notifEnd" value="22:00" />
+      <label class="field-label">Напоминать не чаще, чем раз в</label>
+      <select id="notifInterval">
+        <option value="1">1 час</option>
+        <option value="2">2 часа</option>
+        <option value="3" selected>3 часа</option>
+        <option value="4">4 часа</option>
+        <option value="6">6 часов</option>
+      </select>
+      <button id="testNotifBtn" class="btn ghost small">Отправить тестовое уведомление</button>
+      <p class="tiny-note" id="notifPlatformNote"></p>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>Установить на телефон</h3>
+    <p class="card-sub" id="installHint">Открой это в Safari/Chrome на телефоне и выбери «Добавить на экран Домой».</p>
+    <button id="installBtn" class="btn small hidden">Установить приложение</button>
+  </section>
+
+  <section class="card">
+    <h3>Имя питомца</h3>
+    <div class="add-task-row">
+      <input id="petNameInput" type="text" maxlength="20" />
+      <button id="renamePetBtn" class="btn small">Сохранить</button>
+    </div>
+  </section>
+
+  <section class="card danger-card">
+    <h3>Сбросить прогресс</h3>
+    <p class="card-sub">Питомец, монеты, стрик и задачи будут удалены безвозвратно.</p>
+    <button id="resetBtn" class="btn danger small">Сбросить всё</button>
+  </section>
+</main>
+
+<nav class="tabbar">
+  <button class="tab-btn active" data-view="pet">
+    <span class="tab-emoji">🐾</span><span>Питомец</span>
+  </button>
+  <button class="tab-btn" data-view="tasks">
+    <span class="tab-emoji">📋</span><span>Задачи</span>
+  </button>
+  <button class="tab-btn" data-view="shop">
+    <span class="tab-emoji">🦊</span><span>Зверята</span>
+  </button>
+  <button class="tab-btn" data-view="stats">
+    <span class="tab-emoji">📊</span><span>Статистика</span>
+  </button>
+  <button class="tab-btn" data-view="settings">
+    <span class="tab-emoji">⚙️</span><span>Настройки</span>
+  </button>
+</nav>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
