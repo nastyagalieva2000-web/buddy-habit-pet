@@ -1,6 +1,7 @@
-const CACHE_NAME = 'buddy-cache-v12';
+const CACHE_NAME = 'buddy-cache-v13';
 const ANIMAL_IDS = [
-  'cat', 'dog', 'rabbit', 'sheep', 'fox', 'deer', 'cow', 'horse',
+  'cat', 'cat-sad', 'cat-baby', 'cat-baby-sad',
+  'dog', 'rabbit', 'sheep', 'fox', 'deer', 'cow', 'horse',
   'owl', 'penguin', 'seal', 'polarbear',
   'seahorse', 'octopus', 'turtle', 'shark', 'orca',
   'parrot', 'toucan', 'flamingo', 'dolphin',

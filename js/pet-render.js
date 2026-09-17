@@ -32,12 +32,17 @@ export function renderPet(host, { stage, mood, species, sick }) {
   if (mood === 'cry' || mood === 'starving') filters.push('saturate(0.75)', 'brightness(0.92)');
   const filterStyle = filters.length ? `style="filter:${filters.join(' ')}"` : '';
 
-  const moodBadge = !sick && MOOD_BADGE[mood] ? `<span class="pet-mood-badge">${MOOD_BADGE[mood]}</span>` : '';
+  // Species with real drawn mood variants don't need the emoji badge on top —
+  // only fall back to it when the art itself can't show the mood (happy/sad only, so far).
+  const stageKey = stage === 'baby' ? 'baby' : 'adult';
+  const moodKey = (mood === 'happy' || mood === 'neutral') ? 'happy' : 'sad';
+  const hasDrawnMood = !!(sp.variants && sp.variants[`${stageKey}-${moodKey}`]);
+  const moodBadge = !sick && !hasDrawnMood && MOOD_BADGE[mood] ? `<span class="pet-mood-badge">${MOOD_BADGE[mood]}</span>` : '';
   const stageBadge = stage === 'adult' ? '<span class="pet-badge">✨</span>' : '';
 
   host.innerHTML = `
     <div class="pet-wrap ${sick ? 'sick' : ''}">
-      <img class="pet-photo" src="${speciesImage(sp.id)}" alt="${sp.name}" ${filterStyle} />
+      <img class="pet-photo" src="${speciesImage(sp.id, { stage, mood })}" alt="${sp.name}" ${filterStyle} />
       ${stageBadge}
       ${moodBadge}
       ${sick ? '<span class="pet-sick-badge">🤒</span>' : ''}
