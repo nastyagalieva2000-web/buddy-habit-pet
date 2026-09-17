@@ -252,14 +252,14 @@ function treatRowHTML(habit, s) {
   if (excused) {
     return `
       <div class="treat-row">
-        <span class="treat-hint">🍬 Прощено на этой неделе — питомец не расстроится</span>
+        <span class="treat-hint">Прощено на этой неделе — питомец не расстроится</span>
       </div>`;
   }
   const canAfford = s.coins >= TREAT_COST;
   return `
     <div class="treat-row">
-      <span class="treat-hint">Знаешь, что не успеешь? Побалуй питомца, чтобы не расстраивался из-за этого</span>
-      <button class="treat-btn" data-action="treat" ${canAfford ? '' : 'disabled'}>🍬 ${TREAT_COST}</button>
+      <span class="treat-hint">Знаешь, что не успеешь? Прости себе эту привычку на неделе, чтобы питомец не расстраивался</span>
+      <button class="treat-btn" data-action="treat" ${canAfford ? '' : 'disabled'}>Простить · ${TREAT_COST} <img class="coin-icon-inline" src="assets/ui/coin.png" alt="монет" /></button>
     </div>`;
 }
 
@@ -268,8 +268,10 @@ function habitCardHTML(habit, s) {
   const pct = Math.min(100, Math.round((weekCount / habit.weeklyTarget) * 100));
   const met = weekCount >= habit.weeklyTarget;
   const pinnedToday = isPinnedToday(habit);
-  const daysLine = habit.pinnedDays && habit.pinnedDays.length
-    ? `<div class="habit-days">${habit.pinnedDays.map(d => DAY_LABELS[d - 1]).join(', ')}</div>` : '';
+  const metaParts = [];
+  if (habit.pinnedDays && habit.pinnedDays.length) metaParts.push(habit.pinnedDays.map(d => DAY_LABELS[d - 1]).join(', '));
+  if (habit.note) metaParts.push(habit.note);
+  const daysLine = metaParts.length ? `<div class="habit-days">${escapeHtml(metaParts.join(' · '))}</div>` : '';
 
   return `
     <div class="card habit-card" data-habit="${habit.id}">
@@ -330,7 +332,7 @@ function handleHabitAction(habitId, action, actionEl, { fromToday = false } = {}
     stopTimer();
   } else if (action === 'treat') {
     if (useTreat(habitId)) {
-      showToast(`🍬 ${habit.title} прощена на эту неделю — питомец рад угощению`);
+      showToast(`${habit.title} прощена на эту неделю — питомец не расстроится`);
       celebrate();
     } else {
       showToast('Не хватает монет на гостинец');

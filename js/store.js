@@ -51,9 +51,9 @@ function migrate(state) {
   const d = defaultState();
   const habits = (state.habits || d.habits).map(h => {
     const def = DEFAULT_HABITS.find(dh => dh.id === h.id);
-    // Built-in habits keep the user's target/progress, but re-sync their pinned
-    // days from the current defaults whenever the schedule changes in code.
-    return def ? { ...h, pinnedDays: def.pinnedDays } : h;
+    // Built-in habits keep the user's target/progress, but re-sync their format
+    // (days, mode, durations, note) from the current defaults whenever it changes in code.
+    return def ? { ...h, pinnedDays: def.pinnedDays, mode: def.mode, durations: def.durations || [], note: def.note || null } : h;
   });
 
   let unlockedSpecies = state.unlockedSpecies || [...STARTER_SPECIES];
@@ -463,7 +463,7 @@ export function useTreat(habitId) {
   applyDecay();
   state.pet.hunger = Math.min(100, state.pet.hunger + 8);
   state.pet.joy = Math.min(100, state.pet.joy + 14);
-  state.log.unshift({ id: cryptoId(), habitId: null, emoji: '🍬', label: `Гостинец: ${habit.title}`, ts: Date.now(), minutes: 0 });
+  state.log.unshift({ id: cryptoId(), habitId: null, emoji: '🎁', label: `Прощено: ${habit.title}`, ts: Date.now(), minutes: 0 });
   state.log = state.log.slice(0, 300);
 
   persist();
